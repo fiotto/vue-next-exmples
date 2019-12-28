@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+
+  <link rel="stylesheet" type="text/css" href="../css/bulma.css">
+
+  <script src="js/vue.js"></script>
+
+  <title>Vue-2のサンプル(カスタムコンポーネントのv-model)</title>
+</head>
+<body>
+  <section class="section">
+    <div id="app">
+      <div class="container">
+        <div class="field">
+          <label class="label">テキストボックス</label>
+          
+          <my-text v-model="text"></my-text>
+          <my-text v-bind:value="text" v-on:input="onInputText"></my-text>
+
+          <p class="help">{{ text }}</p>
+        </div>
+
+        <div class="field">
+          <label class="label">テキストエリア</label>
+          <div class="control">
+            <textarea class="textarea is-black" rows="5" v-model="textArea"></textarea>
+          </div>
+          <p class="help">{{ textArea }}</p>
+        </div>
+
+        <div class="field">
+          <label class="label">チェックボックス</label>
+          <label class="checkbox">
+            <input type="checkbox" value="one" v-model="checkedNames">
+            One 
+          </label>
+          <label class="checkbox">
+            <input type="checkbox" value="two" v-model="checkedNames">
+            Two
+          </label>
+          <label class="checkbox">
+            <input type="checkbox" value="three" v-model="checkedNames">
+            Three
+          </label>
+          <p class="help">{{ checkedNames }}</p>
+        </div>
+
+        <div class="field">
+          <label class="label">ラジオ</label>
+          <div class="control">
+            <label class="radio">
+              <input type="radio" value="一" v-model="picked">
+              一
+            </label>
+            <label class="radio">
+              <input type="radio" value="二" v-model="picked">
+              二
+            </label>
+            <label class="radio">
+              <input type="radio" value="三" v-model="picked">
+              三
+            </label>
+          </div>
+          <p class="help">{{ picked }}</p>
+        </div>
+        
+        <div class="field">
+          <label class="label">セレクト</label>
+          <div class="control">
+            <div class="select is-info is-fullwidth">
+              <select v-model="selected">
+                <option value="eins">Eins</option>
+                <option value="zwei">Zwei</option>
+                <option value="drei">Drei</option>
+              </select>
+            </div>
+          </div>
+          <p class="help">{{ selected }}</p>
+        </div>
+
+        <div class="field">
+          <label class="label">セレクト(複数)</label>
+          <div class="control">
+            <div class="select is-multiple is-success is-fullwidth">
+              <select v-model="multiple" multiple>
+                <option value="une">Une</option>
+                <option value="deux">Deux</option>
+                <option value="trois">Trois</option>
+              </select>
+            </div>
+          </div>
+          <p class="help">{{ multiple }}</p>
+        </div>
+
+        <div class="field">
+          <label class="label">修飾子</label>
+
+          <label class="label">.lazy</label>
+          <div class="control">
+            <input class="input is-warning" type="text" v-model.lazy="modifiers.lazy">
+          </div>
+
+          <label class="label">.number</label>
+          <div class="control">
+            <input class="input is-danger" type="text" v-model.number="modifiers.number">
+          </div>
+
+          <label class="label">.trim</label>
+          <div class="control">
+            <input class="input is-dark" type="text" v-model.trim="modifiers.trim">
+          </div>
+
+          <p class="help">{{ modifiers }}</p>
+        </div>
+
+        <pre>{{ $data }}</pre>
+      </div>
+    </div>
+  </section>
+
+  <script type="text/x-template" id="my-text">
+    <div class="control">
+      <input class="input is-primary" type="text" @input="onInput">
+    </div>
+  </script>
+  <script>
+    // 子コンポーネント
+    const MyText = {
+      template: '#my-text',
+      props: {
+        value: {
+          type: String,
+          default: ''
+        }
+      },
+      model: {
+        prop: 'value',
+        event: 'input'
+      },
+      data() {
+        return {
+          localValue: ''
+        }
+      },
+      methods: {
+        onInput($event) {
+          console.log('this', this);
+          this.$emit('input', $event.target.value)
+        }
+      }
+    }
+  </script>
+
+  <script>
+    // 親コンポーネント
+    const App = {
+      el: '#app',
+      components: {
+        MyText
+      },
+      data: function(){
+        return {
+          text: 'テキストボックス',
+          textArea: 'テキストエリア',
+          checkedNames: [],
+          picked: '一',
+          selected: 'eins',
+          multiple: [],
+          modifiers: {
+            lazy: '',
+            number: '',
+            trim: ''
+          }
+        }
+      },
+      methods: {
+        onInputText($event) {
+          console.log('parent components')
+          this.text = $event
+        }
+      }
+    }
+
+    const app = new Vue(App)
+  </script>
+</body>
+</html>
