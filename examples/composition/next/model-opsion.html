@@ -141,6 +141,7 @@
       },
       setup(props, context) {
         const onInput = ($event) => {
+          $event.stopPropagation(); // Vue 3では明示的にstopPropagation()を呼んで止めないと、親に渡ってしまう。
           console.log('context', context);
           context.emit('input', $event.target.value)
         }
@@ -182,15 +183,13 @@
 
         const modifiers = useModifiers()
 
-        const onInputText = ($event) => {
+        const onInputText = ($event, hoge) => {
           console.log('parent components')
           console.log($event)
           state.text = $event
-          console.log(state)
         }
 
         return {
-          state,
           ...toRefs(state),
           modifiers,
           onInputText
